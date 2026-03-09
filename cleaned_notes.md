@@ -59,8 +59,8 @@ If you want to run the notebook fast and still keep everything consistent:
 **These conventions MUST be consistent across parts**, otherwise comparisons become apples-to-oranges:
 
 ## 1.1 Plot ranges & grids
-- **Histogram x-range:** `x ∈ [2, 7]`
-- **Bin width:** `Δ = 0.1`
+- **Histogram x-range:** $x ∈ [2, 7]$
+- **Bin width:** $Δ = 0.1$
 - **Bin edges:** use `np.arange(2.0, 7.0 + Δ + 1e-12, Δ)`  
   (the `1e-12` prevents floating-point edge loss)
 - **Smooth curve grid:** `x_grid = np.linspace(2.0, 7.0, 600)`  
@@ -69,7 +69,7 @@ If you want to run the notebook fast and still keep everything consistent:
 ## 1.2 Normalized histogram definition
 Use `density=True` in `plt.hist`:
 - `density=True` makes the histogram a **probability density estimate**:
-  - bar height ≈ `count / (N * Δ)`
+  - bar height ≈ $count / (N * Δ)$
   - total **area** ≈ 1  
   (Important: not “sum of heights = 1”. It is “sum of areas = 1”.)
 
@@ -109,16 +109,16 @@ plt.ylabel("Probability density (normalized histogram)")
 plt.title("Normalized Histogram of Petal Length (All Species)")
 plt.grid(alpha=0.3)
 plt.show()
-````
+```
 
 ### Why this code (code usage explanation + math link)
 
 * `dropna()` avoids NaNs breaking the histogram or silently affecting counts.
 * `bins = np.arange(...)` forces exact bin width 0.1; the `+1e-12` avoids missing the endpoint due to float error.
 * `density=True` converts “counts” to “density” so the histogram approximates a pdf:
-  [
+  $$
   \text{height}_k \approx \frac{\text{count}_k}{N\Delta}
-  ]
+  $$
   and total area ≈ 1.
 
 ### Checklist (things to remember)
@@ -148,13 +148,13 @@ print(f"Empirical std  σ = {sigma:.6f}")
 ### Why this code (math link)
 
 * Mean:
-  [
+  $$
   m=\frac{1}{n}\sum_{i=1}^{n}r_i
-  ]
+  $$
 * Sample std (assignment uses `n-1`):
-  [
+  $$
   \sigma=\sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(r_i-m)^2}
-  ]
+  $$
 * `std(ddof=1)` matches denominator `(n-1)`.
 
 ### Checklist
@@ -169,9 +169,9 @@ print(f"Empirical std  σ = {sigma:.6f}")
 ### Modeling assumption
 
 Assume:
-[
+$$
 X \sim \mathcal N(m,\sigma^2)
-]
+$$
 where `m`, `sigma` come from Part b.
 
 ### ✅ Code (paste into Part c code cell)
@@ -232,9 +232,9 @@ print(f"m = {m:.6f}, sigma = {sigma:.6f}")
 ### Idea (stats link)
 
 This is switching from marginal `f_X(x)` to conditional distributions by class: you visually compare
-[
+$$
 f_{X|C}(x|c)
-]
+$$
 for each species `c`.
 
 ### ✅ Code (paste into Part d code cell)
@@ -285,9 +285,9 @@ plt.show()
 ### Modeling assumption
 
 For each species (s):
-[
+$$
 X|C=s \sim \mathcal N(m_s,\sigma_s^2)
-]
+$$
 Estimate `m_s`, `sigma_s` from that species’ sample.
 
 ### ✅ Code (paste into Part e code cell)
@@ -347,9 +347,9 @@ plt.show()
 ### Total probability theorem (must be weighted sum!)
 
 Correct formula:
-[
+$$
 g_X(x)=P(V),f_{X|V}(x)+P(VC),f_{X|VC}(x)
-]
+$$
 **Not** commas.
 
 ### Why mixture can outperform Part c
@@ -434,9 +434,9 @@ print(f"Single Gauss: m={m_single:.4f}, σ={s_single:.4f}")
 # 3) Section 2: Two-dimensional joint modeling (before Section 3) 🧠
 
 Section 2 introduces a **joint random vector**:
-[
+$$
 (X,Y)=(L,W)=(\text{Petal length},\text{Petal width})
-]
+$$
 and asks whether the joint distribution (or conditional joint distribution) can be modeled as multivariate normal.
 
 ---
@@ -445,7 +445,7 @@ and asks whether the joint distribution (or conditional joint distribution) can 
 
 ### Statistical meaning
 
-Scatter plot visualizes the cloud of samples ((x_i,y_i)), which helps diagnose:
+Scatter plot visualizes the cloud of samples ($x_i,y_i$), which helps diagnose:
 
 * single-cluster ellipse (suggesting Gaussian),
 * multi-cluster mixture (suggesting mixtures or conditioning by class),
@@ -483,21 +483,21 @@ rho = data[["Petal length", "Petal width"]].corr(method="pearson")
 ### Math link
 
 * Mean vector:
-  [
+  $$
   \mu\approx \begin{bmatrix}\bar X\\bar Y\end{bmatrix}
-  ]
+  $$
 * Covariance matrix:
-  [
+  $$
   \Sigma \approx
   \begin{bmatrix}
   \mathrm{Var}(X) & \mathrm{Cov}(X,Y)\
   \mathrm{Cov}(X,Y) & \mathrm{Var}(Y)
   \end{bmatrix}
-  ]
+  $$
 * Correlation:
-  [
+  $$
   \rho_{XY}=\frac{\mathrm{Cov}(X,Y)}{\sigma_X\sigma_Y}
-  ]
+  $$
 
 ### Important usage detail
 
@@ -522,9 +522,9 @@ Sigma = C.to_numpy()
 ### Why contour lines are ellipses
 
 For MVN, equal density sets satisfy:
-[
+$$
 (\mathbf z-\mu)^T\Sigma^{-1}(\mathbf z-\mu)=\text{constant}
-]
+$$
 which form ellipses (shape/rotation determined by (\Sigma)).
 
 ### Reusable code snippet (robust, recommended)
@@ -572,9 +572,9 @@ plt.show()
 ### Meaning
 
 This visualizes conditional clouds:
-[
+$$
 (X,Y)|C=c
-]
+$$
 Often each class looks “more Gaussian” than the mixed dataset.
 
 ### Reusable code snippet
@@ -637,9 +637,9 @@ for sp in corr_by_species:
 
 ### Math link (what those outputs represent)
 
-* (\mu_c): mean vector for class (c)
-* (\Sigma_c): covariance matrix for class (c)
-* (\rho_c): correlation matrix for class (c)
+* $\mu_c$: mean vector for class (c)
+* $\Sigma_c$: covariance matrix for class (c)
+* $\rho_c$: correlation matrix for class (c)
 
 ### Key detail
 
@@ -673,22 +673,22 @@ Paste this into the Part h markdown cell (then adjust if your computed numbers d
 ### 4-line theory (why this works)
 
 Assume for each class (c\in{VC,V}):
-[
+$$
 (W,L)|c \sim \mathcal N(\mu_c,\Sigma_c)
-]
+$$
 Define a linear score:
-[
-D = 7W - L = a^T\begin{bmatrix}W\L\end{bmatrix},\quad a=\begin{bmatrix}7\-1\end{bmatrix}
-]
+$$
+D = 7W - L = a^T\begin{bmatrix}W \ L \end{bmatrix},\quad a=\begin{bmatrix}7\ -1\end{bmatrix}
+$$
 Then:
-[
+$$
 D|c \sim \mathcal N(a^T\mu_c,\ a^T\Sigma_c a)
-]
-Classifier: predict virginica if (D>T). Error probability:
-[
+$$
+Classifier: predict virginica if $D>T$. Error probability:
+$$
 P_e(T)=\pi_{VC},P(D>T|VC) + \pi_V,P(D\le T|V)
-]
-where (\pi_c=P(C=c)) (empirical priors from counts).
+$$
+where $\pi_c=P(C=c)$ (empirical priors from counts).
 
 ### ✅ Code (robust, with one-feature baseline comparison)
 
@@ -785,11 +785,11 @@ print(f"Improvement (1D - 2D)  = {P_star_1d - P_star:.6f}")
 
 * EN:
 
-  * The optimal threshold is (T^*=) **(printed value)** with minimum error (P_e(T^*)=) **(printed value)**.
+  * The optimal threshold is $T^*=$ **(printed value)** with minimum error $P_e(T^*)=$ **(printed value)**.
   * The error is typically lower than using one feature alone (compare with `Minimum error (L only)`).
 * ZH:
 
-  * 最优阈值 (T^*=) **(你的输出)**，最小错误率 (P_e(T^*)=) **(你的输出)**。
+  * 最优阈值 $T^*=$ **(你的输出)**，最小错误率 $P_e(T^*)=$ **(你的输出)**。
   * 一般会比只用 (L) 的单特征分类器更低（比较两者最小错误率）。
 
 ---
